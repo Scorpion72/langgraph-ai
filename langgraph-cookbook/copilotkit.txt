@@ -1,0 +1,35 @@
+
+What is Human-in-the-Loop (HITL)?
+Human-in-the-loop (HITL) allows agents to request human input or approval during execution, making AI systems more reliable and trustworthy. This pattern is essential when building AI applications that need to handle complex decisions or actions that require human judgment.
+
+
+
+
+##dd useLangGraphInterrupt to the frontend
+#If you recall from when we started the agent, the interrupt will stop the node when its time to review a proposed research outline.
+#CopilotKit allows us to render a UI to get the user's decision for this interrupt and respond accordingly via the useLangGraphInterrupt hook.
+#In our page.tsx file, add the following code.
+
+// ...
+import { useLangGraphInterrupt } from "@copilotkit/react-core"; 
+// ...
+export default function HomePage() {
+    // ...
+    const { state: researchState, setResearchState } = useResearch()
+    const streamingSection = useStreamingContent(researchState);
+    useLangGraphInterrupt<Proposal>({
+      render: ({ resolve, event }) => {
+        return <ProposalViewer
+          proposal={event.value}
+          onSubmit={(approved, proposal) => resolve(
+            JSON.stringify({
+              ...proposal,
+              approved,
+            })
+          )}
+        />
+      }
+    })
+    // ...
+}
+Now, when the
